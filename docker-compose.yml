@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   prometheus:
-    image: prom/prometheus
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
     container_name: prometheus
     ports:
       - "9090:9090"
@@ -12,11 +14,11 @@ services:
       - monitoring
     environment:
       - PROMETHEUS_CONFIG=/etc/prometheus/prometheus.yml
-    depends_on:
-      - loki
 
   grafana:
-    image: grafana/grafana
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
     container_name: grafana
     ports:
       - "3000:3000"
@@ -24,13 +26,15 @@ services:
       - grafana_data:/var/lib/grafana
     networks:
       - monitoring
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
+      - loki
 
   loki:
-    image: grafana/loki
+    # build:
+    #   context: ./loki
+    #   dockerfile: Dockerfile
+    image: grafana/loki:latest
     container_name: loki
     ports:
       - "3100:3100"

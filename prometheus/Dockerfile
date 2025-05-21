@@ -4,6 +4,6 @@ EXPOSE 9090
 
 WORKDIR /etc/prometheus
 
-COPY prometheus.yml /etc/prometheus/prometheus.yml
+# COPY prometheus.yml /etc/prometheus/prometheus.yml
 
-CMD ["prometheus", "--config.file=/etc/prometheus/prometheus.yml"]
+CMD ["--config.file=/etc/prometheus/prometheus.yml"]
