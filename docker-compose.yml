@@ -45,6 +45,18 @@ services:
     environment:
       - LOKI_CONFIG=/etc/loki/loki-config.yaml
 
+  keycloak:
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    container_name: keycloak
+    ports:
+      - "8081:8081"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - monitoring
+
 networks:
   monitoring:
     driver: bridge
@@ -53,3 +65,4 @@ volumes:
   prometheus_data:
   grafana_data:
   loki_data:
+  keycloak_data:

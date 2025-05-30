@@ -1,0 +1,50 @@
+{
+    "realm": "company1",
+    "enabled": true,
+    "displayName": "Company 1",
+    "accessTokenLifespan": 1800,
+    "ssoSessionIdleTimeout": 3600,
+    "ssoSessionMaxLifespan": 86400,
+    "users": [
+        {
+            "username": "admin-company1",
+            "email": "admin@company1.com",
+            "firstName": "Admin",
+            "lastName": "User",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "admin-company1"
+                }
+            ]
+        }
+    ],
+    "clients": [
+        {
+            "clientId": "web-app",
+            "enabled": true,
+            "protocol": "openid-connect",
+            "redirectUris": [
+                "*"
+            ],
+            "publicClient": false,
+            "secret": "web-app-secret",
+            "webOrigins": [
+                "*"
+            ]
+        },
+        {
+            "clientId": "mobile-app",
+            "enabled": true,
+            "protocol": "openid-connect",
+            "redirectUris": [
+                "com.company1.mobile:/callback"
+            ],
+            "publicClient": true,
+            "webOrigins": [
+                "*"
+            ]
+        }
+    ]
+}
