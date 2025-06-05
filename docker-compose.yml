@@ -61,7 +61,7 @@ services:
     image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092" # Port Kafka
-      - "9093:9093" # Port du contrôleur KRaft
+      - "9093:9093" # Port du contrôleur  KRaft
     environment:
       KAFKA_KRAFT_MODE: "true"
       KAFKA_PROCESS_ROLES: "controller,broker"
