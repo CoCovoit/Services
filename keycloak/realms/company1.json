@@ -25,14 +25,22 @@
             "clientId": "web-app",
             "enabled": true,
             "protocol": "openid-connect",
+            "rootUrl": "http://localhost:5173",
+            "baseUrl": "http://localhost:5173",
             "redirectUris": [
-                "*"
+                "http://localhost:5173/*"
+            ],
+            "postLogoutRedirectUris": [
+                "http://localhost:5173/*"
             ],
             "publicClient": false,
             "secret": "web-app-secret",
             "webOrigins": [
                 "*"
-            ]
+            ],
+            "attributes": {
+                "post.logout.redirect.uris": "+"
+            }
         },
         {
             "clientId": "mobile-app",
