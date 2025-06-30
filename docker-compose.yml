@@ -46,16 +46,31 @@ services:
       - LOKI_CONFIG=/etc/loki/loki-config.yaml
 
   keycloak:
-    build:
-      context: ./keycloak
-      dockerfile: Dockerfile
+    image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     ports:
       - "8081:8081"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin1
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin1
+      - KC_HOSTNAME_PORT=8081
     volumes:
       - keycloak_data:/opt/keycloak/data
+      - ./keycloak/realms:/opt/keycloak/data/import
+    command: ["start-dev", "--http-port=8081", "--import-realm"]
     networks:
       - monitoring
+
+  # build:
+  #   context: ./keycloak
+  #   dockerfile: Dockerfile
+  # container_name: keycloak
+  # ports:
+  #   - "8081:8081"
+  # volumes:
+  #   - keycloak_data:/opt/keycloak/data
+  # networks:
+  #   - monitoring
 
   kafka:
     image: confluentinc/cp-kafka:latest
