@@ -11,7 +11,7 @@ services:
     volumes:
       - prometheus_data:/prometheus
     networks:
-      - monitoring
+      - cocovoit
     environment:
       - PROMETHEUS_CONFIG=/etc/prometheus/prometheus.yml
 
@@ -25,7 +25,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
-      - monitoring
+      - cocovoit
     depends_on:
       - prometheus
       - loki
@@ -41,7 +41,7 @@ services:
     volumes:
       - loki_data:/loki
     networks:
-      - monitoring
+      - cocovoit
     environment:
       - LOKI_CONFIG=/etc/loki/loki-config.yaml
 
@@ -59,7 +59,7 @@ services:
       - ./keycloak/realms:/opt/keycloak/data/import
     command: ["start-dev", "--http-port=8081", "--import-realm"]
     networks:
-      - monitoring
+      - cocovoit
 
   # build:
   #   context: ./keycloak
@@ -70,10 +70,11 @@ services:
   # volumes:
   #   - keycloak_data:/opt/keycloak/data
   # networks:
-  #   - monitoring
+  #   - cocovoit
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka
     ports:
       - "9092:9092" # Port Kafka
       - "9093:9093" # Port du contrôleur KRaft
@@ -90,16 +91,69 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
       CLUSTER_ID: "demo-kafka-cluster"
+    networks:
+      - cocovoit
 
   mailhog:
     image: mailhog/mailhog:latest
+    container_name: mailhog
     ports:
       - "1025:1025" # Port SMTP
       - "8025:8025" # Port interface web
     restart: always
+    networks:
+      - cocovoit
+  
+  # Backend
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: cocovoit
+      MYSQL_DATABASE: cocovoit
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - cocovoit
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: cocovoit
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - cocovoit
+
+  backend:
+    image: yannickboyer/cocovoit-api:latest
+    container_name: backend
+    ports:
+      - "44318:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - mysql
+    networks:
+      - cocovoit
+
+  frontend:
+    image: yannickboyer/cocovoit-front:latest
+    container_name: frontend
+    ports:
+      - "44319:80"
+    networks:
+      - cocovoit
 
 networks:
-  monitoring:
+  cocovoit:
     driver: bridge
 
 volumes:
@@ -107,3 +161,4 @@ volumes:
   grafana_data:
   loki_data:
   keycloak_data:
+  mysql_data:
