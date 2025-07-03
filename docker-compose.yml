@@ -2,28 +2,47 @@ version: "3.8"
 
 services:
   prometheus:
-    build:
-      context: ./prometheus
-      dockerfile: Dockerfile
+    image: prom/prometheus:latest
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     networks:
       - cocovoit
     environment:
       - PROMETHEUS_CONFIG=/etc/prometheus/prometheus.yml
+  
+  # Add node_exporter to monitor the host system (Windows)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc/sys:/host/proc:ro
+      - /sys:/host/sys:ro
+    command: 
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    restart: always
+    networks:
+      - cocovoit
 
   grafana:
-    build:
-      context: ./grafana
-      dockerfile: Dockerfile
+    image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./grafana/config.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     networks:
       - cocovoit
     depends_on:
@@ -44,6 +63,25 @@ services:
       - cocovoit
     environment:
       - LOKI_CONFIG=/etc/loki/loki-config.yaml
+  
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - '12345:12345'
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - alloy_logs:/var/log/alloy
+    environment:
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
+    command:
+      - run
+      - "/etc/alloy/config.yaml"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+    networks:
+      - cocovoit
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -60,17 +98,6 @@ services:
     command: ["start-dev", "--http-port=8081", "--import-realm"]
     networks:
       - cocovoit
-
-  # build:
-  #   context: ./keycloak
-  #   dockerfile: Dockerfile
-  # container_name: keycloak
-  # ports:
-  #   - "8081:8081"
-  # volumes:
-  #   - keycloak_data:/opt/keycloak/data
-  # networks:
-  #   - cocovoit
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -133,19 +160,23 @@ services:
       - cocovoit
 
   backend:
-    image: yannickboyer/cocovoit-api:latest
+    image: yannickboyer/cocovoit-api:v0.0.1
     container_name: backend
     ports:
       - "44318:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
     depends_on:
       - mysql
+    volumes:
+      - backend_logs:/var/log/cocovoit
     networks:
       - cocovoit
 
+  # Frontend
   frontend:
-    image: yannickboyer/cocovoit-front:latest
+    image: yannickboyer/cocovoit-front:v0.0.2
     container_name: frontend
     ports:
       - "44319:80"
@@ -162,3 +193,5 @@ volumes:
   loki_data:
   keycloak_data:
   mysql_data:
+  backend_logs:
+  alloy_logs:
