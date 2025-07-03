@@ -1,0 +1,106 @@
+{
+    "id": null,
+    "uid": "docker-containers-stats",
+    "title": "Docker Containers Stats",
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 0,
+    "templating": {
+        "list": [
+            {
+                "type": "query",
+                "name": "instance",
+                "label": "Container",
+                "datasource": null,
+                "query": "label_values(node_cpu_seconds_total, instance)",
+                "refresh": 1,
+                "includeAll": true,
+                "multi": false
+            }
+        ]
+    },
+    "panels": [
+        {
+            "type": "timeseries",
+            "title": "CPU Usage (%)",
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "(1 - avg by (instance)(rate(node_cpu_seconds_total{mode=\"idle\",instance=~\"$instance\"}[5m]))) * 100",
+                    "legendFormat": "{{instance}}",
+                    "refId": "A"
+                }
+            ],
+            "datasource": null
+        },
+        {
+            "type": "timeseries",
+            "title": "Memory Usage (%)",
+            "gridPos": {
+                "x": 12,
+                "y": 0,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"$instance\"} / node_memory_MemTotal_bytes{instance=~\"$instance\"})) * 100",
+                    "legendFormat": "{{instance}}",
+                    "refId": "A"
+                }
+            ],
+            "datasource": null
+        },
+        {
+            "type": "timeseries",
+            "title": "Network Traffic (bytes/s)",
+            "gridPos": {
+                "x": 0,
+                "y": 6,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "rate(node_network_receive_bytes_total{instance=~\"$instance\",device!~\"lo\"}[5m])",
+                    "legendFormat": "Receive",
+                    "refId": "A"
+                },
+                {
+                    "expr": "rate(node_network_transmit_bytes_total{instance=~\"$instance\",device!~\"lo\"}[5m])",
+                    "legendFormat": "Transmit",
+                    "refId": "B"
+                }
+            ],
+            "datasource": null
+        },
+        {
+            "type": "timeseries",
+            "title": "Disk I/O (bytes/s)",
+            "gridPos": {
+                "x": 12,
+                "y": 6,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "rate(node_disk_read_bytes_total{instance=~\"$instance\"}[5m])",
+                    "legendFormat": "Read",
+                    "refId": "A"
+                },
+                {
+                    "expr": "rate(node_disk_written_bytes_total{instance=~\"$instance\"}[5m])",
+                    "legendFormat": "Write",
+                    "refId": "B"
+                }
+            ],
+            "datasource": null
+        }
+    ]
+}

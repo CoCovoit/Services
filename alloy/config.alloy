@@ -1,0 +1,40 @@
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
+local.file_match "docker_logs" {
+  path_targets = [{
+    __path__    = "/var/lib/docker/containers/*/*.log",
+    job         = "docker",
+  }]
+}
+
+loki.process "docker_logs" {
+  forward_to = [loki.write.default.receiver]
+  stage.match {
+    selector = "{job=\"docker\"}"
+
+    stage.regex {
+      source = "filename"
+      expression = "/var/lib/docker/containers/(?P<container_id>[^/]+)/.*log"
+    }
+
+    stage.labels {
+      values = {
+        container_id = "",
+      }
+    }
+  }
+}
+
+loki.source.file "docker_logs" {
+  targets = local.file_match.docker_logs.targets
+  forward_to = [loki.process.docker_logs.receiver]
+}
+
+
+loki.write "default" {
+  endpoint {
+    url = sys.env("LOKI_URL")
+  }
+}

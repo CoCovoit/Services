@@ -1,5 +1,8 @@
 # Services
 
+## Prerequisites
+Install windows_exporter on your Windows machine if you want to monitor your host as well.
+
 ## Deploying Prometheus, Grafana, and Loki using Docker Compose
 
 To deploy Prometheus, Grafana, and Loki using Docker Compose, follow these steps:
