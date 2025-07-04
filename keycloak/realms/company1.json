@@ -18,6 +18,19 @@
                     "value": "admin-company1"
                 }
             ]
+        },
+        {
+            "username": "matnoss@gmail.com",
+            "email": "matnoss@gmail.com",
+            "firstName": "Matteo",
+            "lastName": "Nossereau",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "matnoss@gmail.com"
+                }
+            ]
         }
     ],
     "clients": [
