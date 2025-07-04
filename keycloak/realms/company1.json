@@ -36,8 +36,11 @@
                 "*"
             ],
             "attributes": {
-                "post.logout.redirect.uris": "+"
-            }
+                "post.logout.redirect.uris": "+",
+                "oidc.ciba.grant.enabled": "false",
+                "pkce.code.challenge.method": "S256"
+            },
+            "directAccessGrantsEnabled": true
         },
         {
             "clientId": "mobile-app",
