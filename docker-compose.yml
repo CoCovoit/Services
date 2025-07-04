@@ -84,7 +84,7 @@ services:
       - cocovoit
 
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.2.5
     container_name: keycloak
     ports:
       - "8081:8081"
@@ -160,7 +160,7 @@ services:
       - cocovoit
 
   backend:
-    image: yannickboyer/cocovoit-api:v0.0.1
+    image: yannickboyer/cocovoit-api:latest
     container_name: backend
     ports:
       - "44318:80"
@@ -176,7 +176,7 @@ services:
 
   # Frontend
   frontend:
-    image: yannickboyer/cocovoit-front:v0.0.2
+    image: yannickboyer/cocovoit-front:latest
     container_name: frontend
     ports:
       - "44319:80"
