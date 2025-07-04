@@ -179,7 +179,12 @@ services:
     image: yannickboyer/cocovoit-front:latest
     container_name: frontend
     ports:
-      - "44319:80"
+      - "5173:80"
+    environment:
+      - VITE_API_ENDPOINT=http://backend:44318/
+      - VITE_KEYCLOAK_REALM=company1
+      - VITE_KEYCLOAK_URL=http://keycloak:8081/
+      - VITE_KEYCLOAK_CLIENTID=web-app
     networks:
       - cocovoit
 
