@@ -1,0 +1,123 @@
+{
+    "id": null,
+    "uid": "docker-logs-analysis",
+    "title": "Docker Logs Analysis",
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 3,
+    "templating": {
+        "list": [
+            {
+                "type": "query",
+                "name": "container_id",
+                "label": "Container ID",
+                "datasource": "Loki",
+                "query": "label_values({job=\"docker\"}, container_id)",
+                "refresh": 1,
+                "multi": false,
+                "includeAll": true
+            },
+            {
+                "type": "query",
+                "name": "filename",
+                "label": "Filename",
+                "datasource": "Loki",
+                "query": "label_values({job=\"docker\"}, filename)",
+                "refresh": 1,
+                "multi": false,
+                "includeAll": true
+            }
+        ]
+    },
+    "panels": [
+        {
+            "type": "logs",
+            "title": "Logs by Container ID",
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 24,
+                "h": 8
+            },
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "{job=\"docker\", container_id=~\"$container_id\"}",
+                    "refId": "A"
+                }
+            ]
+        },
+        {
+            "type": "logs",
+            "title": "Logs by Filename",
+            "gridPos": {
+                "x": 0,
+                "y": 8,
+                "w": 24,
+                "h": 8
+            },
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "{job=\"docker\", filename=~\"$filename\"}",
+                    "refId": "B"
+                }
+            ]
+        },
+        {
+            "type": "timeseries",
+            "title": "Logs Count Over Time",
+            "gridPos": {
+                "x": 0,
+                "y": 16,
+                "w": 12,
+                "h": 6
+            },
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "count_over_time({job=\"docker\", container_id=~\"$container_id\", filename=~\"$filename\"}[$__interval])",
+                    "legendFormat": "Count",
+                    "refId": "C"
+                }
+            ]
+        },
+        {
+            "type": "timeseries",
+            "title": "Log Rate (logs/sec)",
+            "gridPos": {
+                "x": 12,
+                "y": 16,
+                "w": 12,
+                "h": 6
+            },
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum(count_over_time({job=\"docker\", container_id=~\"$container_id\", filename=~\"$filename\"}[$__interval])) by (container_id)",
+                    "legendFormat": "{{container_id}}",
+                    "refId": "D"
+                }
+            ]
+        },
+        {
+            "type": "piechart",
+            "title": "Logs by Level",
+            "gridPos": {
+                "x": 0,
+                "y": 22,
+                "w": 7,
+                "h": 15
+            },
+            "datasource": "Loki",
+            "targets": [
+                {
+                    "expr": "sum by (detected_level) (count_over_time({job=\"docker\", container_id=~\"$container_id\", filename=~\"$filename\"}[$__interval]))",
+                    "legendFormat": "{{detected_level}}",
+                    "refId": "E"
+                }
+            ]
+        }
+    ],
+    "overwrite": true
+}
