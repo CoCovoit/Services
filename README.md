@@ -4,7 +4,7 @@ Ce dépôt contient la configuration Docker Compose permettant de lancer l'ensem
 
 ## Prérequis
 - [Docker](https://docs.docker.com/get-docker/) installé.
-- [windows_exporter](https://github.com/prometheus-community/windows_exporter) (Optionnel) sur votre machine Windows si vous souhaitez superviser l'hôte.
+- (Optionnel) [windows_exporter](https://github.com/prometheus-community/windows_exporter) sur votre machine Windows si vous souhaitez superviser l'hôte.
 
 ## Démarrage des services
 ```sh
@@ -34,6 +34,7 @@ Les conteneurs sont ensuite accessibles sur les ports listés ci-dessous.
 | **phpMyAdmin**| 8080      | Interface web pour MySQL. | `root` / `cocovoit` |
 | **Backend**   | 44318     | API .NET de CocoVoit. | - |
 | **Frontend**  | 5173      | Application front Vue.js. | - |
+| **Sonarqube** | web       | Nous utilisons [Sonarqube Cloud](https://sonarcloud.io/organizations/cocovoit/projects) (demander l'accès si besoin) | - |
 
 ### Utilisateurs préconfigurés dans Keycloak
 Le realm `company1` contient notamment :
