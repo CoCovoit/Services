@@ -17,9 +17,9 @@ Pour arrêter l'ensemble :
 docker compose down
 ```
 
+## Services inclus
 Les conteneurs sont ensuite accessibles sur les ports listés ci-dessous. 
 
-## Services inclus
 | Service       | Port local | Utilité | Identifiants par défaut |
 |---------------|-----------|---------|-------------------------|
 | **Prometheus**| 9090      | Collecte des métriques des autres services. | - |
