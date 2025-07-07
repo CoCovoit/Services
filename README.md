@@ -4,7 +4,7 @@ Ce dépôt contient la configuration Docker Compose permettant de lancer l'ensem
 
 ## Prérequis
 - [Docker](https://docs.docker.com/get-docker/) installé.
-- (Optionnel) [windows_exporter](https://github.com/prometheus-community/windows_exporter) sur votre machine Windows si vous souhaitez superviser l'hôte.
+- [windows_exporter](https://github.com/prometheus-community/windows_exporter) (Optionnel) sur votre machine Windows si vous souhaitez superviser l'hôte.
 
 ## Démarrage des services
 ```sh
