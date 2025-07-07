@@ -17,9 +17,9 @@ Pour arrêter l'ensemble :
 docker compose down
 ```
 
+## Services inclus
 Les conteneurs sont ensuite accessibles sur les ports listés ci-dessous. 
 
-## Services inclus
 | Service       | Port local | Utilité | Identifiants par défaut |
 |---------------|-----------|---------|-------------------------|
 | **Prometheus**| 9090      | Collecte des métriques des autres services. | - |
@@ -34,6 +34,7 @@ Les conteneurs sont ensuite accessibles sur les ports listés ci-dessous.
 | **phpMyAdmin**| 8080      | Interface web pour MySQL. | `root` / `cocovoit` |
 | **Backend**   | 44318     | API .NET de CocoVoit. | - |
 | **Frontend**  | 5173      | Application front Vue.js. | - |
+| **Sonarqube** | web       | Nous utilisons [Sonarqube Cloud](https://sonarcloud.io/organizations/cocovoit/projects) (demander l'accès si besoin) | - |
 
 ### Utilisateurs préconfigurés dans Keycloak
 Le realm `company1` contient notamment :
