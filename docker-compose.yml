@@ -111,7 +111,7 @@ services:
       KAFKA_NODE_ID: "1"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092 # Mettre kafka si on dockerise le back
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -177,7 +177,7 @@ services:
   # Worker pour les notifications
   notification-worker:
     build:
-      context: ./NotificationService  # Chemin vers votre projet worker
+      context: ../NotificationService/NotificationService
       dockerfile: Dockerfile
     container_name: notification-worker
     environment:
