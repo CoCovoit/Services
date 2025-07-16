@@ -31,7 +31,7 @@
             },
             "targets": [
                 {
-                    "expr": "(1 - avg by (instance)(rate(node_cpu_seconds_total{mode=\"idle\",instance=~\"$instance\"}[5m]))) * 100",
+                    "expr": "sum by (instance)(rate(node_cpu_seconds_total{mode!=\"idle\",instance=~\"$instance\"}[1m])) / sum by (instance)(rate(node_cpu_seconds_total{instance=~\"$instance\"}[1m])) * 100",
                     "legendFormat": "{{instance}}",
                     "refId": "A"
                 }

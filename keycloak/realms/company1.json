@@ -43,7 +43,7 @@
             "redirectUris": [
                 "http://localhost:5173/*"
             ],
-            "publicClient": false,
+            "publicClient": true,
             "secret": "web-app-secret",
             "webOrigins": [
                 "*"
